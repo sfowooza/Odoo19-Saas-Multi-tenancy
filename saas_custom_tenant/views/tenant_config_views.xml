@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Tenant Configuration Form View -->
+        <record id="view_saas_tenant_config_form" model="ir.ui.view">
+            <field name="name">saas.tenant.config.form</field>
+            <field name="model">saas.tenant.config</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Configuration">
+                    <header>
+                        <button name="action_test_connection" string="Test Connection"
+                                type="object" class="btn-primary"/>
+                        <button name="action_save_configuration" string="Save Configuration"
+                                type="object" class="btn-success"/>
+                        <button name="action_refresh_stats" string="Refresh Stats"
+                                type="object" class="btn-secondary"/>
+                        <field name="is_configured" widget="statusbar"/>
+                    </header>
+
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" name="action_view_tenants"
+                                    type="object" icon="fa-users">
+                                <field name="total_tenants" widget="statbutton"/>
+                            </button>
+                            <button class="oe_stat_button" name="action_view_active_tenants"
+                                    type="object" icon="fa-check-circle">
+                                <field name="active_tenants" widget="statbutton"/>
+                            </button>
+                            <button class="oe_stat_button" name="action_view_available_ports"
+                                    type="object" icon="fa-plug">
+                                <field name="available_ports" widget="statbutton"/>
+                            </button>
+                        </div>
+
+                        <group>
+                            <group string="Company Information">
+                                <field name="company_name"/>
+                                <field name="company_logo" widget="image" class="oe_avatar"/>
+                                <field name="company_email"/>
+                                <field name="company_phone"/>
+                                <field name="company_website"/>
+                            </group>
+                            <group string="Deployment Settings">
+                                <field name="deployment_mode"/>
+                                <field name="master_host"/>
+                                <field name="master_port"/>
+                                <field name="main_domain" attrs="{'invisible': [('deployment_mode', '=', 'localhost')]}"/>
+                                <field name="use_ssl"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Port Configuration"
+                                   attrs="{'invisible': [('deployment_mode', '=', 'subdomain')]}">
+                                <group>
+                                    <group string="Tenant Port Range">
+                                        <field name="tenant_port_start"/>
+                                        <field name="tenant_port_end"/>
+                                        <field name="max_tenants"/>
+                                    </group>
+                                    <group string="Available Ports">
+                                        <div class="text-center">
+                                            <h4><t t-esc="tenant_port_end - tenant_port_start + 1"/></h4>
+                                            <small class="text-muted">Total Available Ports</small>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Database Configuration">
+                                <group>
+                                    <group string="Database Server">
+                                        <field name="db_host"/>
+                                        <field name="db_port"/>
+                                        <field name="db_user"/>
+                                        <field name="db_password" password="True"/>
+                                        <field name="db_template"/>
+                                    </group>
+                                    <group string="Connection Status">
+                                        <div class="alert alert-info">
+                                            <i class="fa fa-info-circle"/> Test connection using the button above
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Docker Configuration">
+                                <group>
+                                    <group string="Container Settings">
+                                        <field name="docker_network"/>
+                                        <field name="docker_image"/>
+                                        <field name="container_memory_limit"/>
+                                        <field name="container_cpu_limit"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Email Configuration">
+                                <group>
+                                    <group string="SMTP Settings">
+                                        <field name="email_from"/>
+                                        <field name="smtp_server"/>
+                                        <field name="smtp_port"/>
+                                        <field name="smtp_use_ssl"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Features">
+                                <group>
+                                    <group string="Tenant Management">
+                                        <field name="enable_trials"/>
+                                        <field name="trial_days" attrs="{'invisible': [('enable_trials', '=', False)]}"/>
+                                        <field name="auto_approve"/>
+                                    </group>
+                                    <group string="System Features">
+                                        <field name="enable_monitoring"/>
+                                        <field name="enable_backups"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Branding">
+                                <group>
+                                    <group string="Theme Colors">
+                                        <field name="primary_color"/>
+                                        <field name="secondary_color"/>
+                                    </group>
+                                </group>
+                                <group string="Custom CSS">
+                                    <field name="custom_css" widget="text"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Tenant Configuration List View -->
+        <record id="view_saas_tenant_config_list" model="ir.ui.view">
+            <field name="name">saas.tenant.config.list</field>
+            <field name="model">saas.tenant.config</field>
+            <field name="arch" type="xml">
+                <tree string="SaaS Configurations">
+                    <field name="company_name"/>
+                    <field name="deployment_mode"/>
+                    <field name="total_tenants"/>
+                    <field name="active_tenants"/>
+                    <field name="is_configured"/>
+                    <field name="is_active"/>
+                    <field name="create_date"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Tenant Configuration Action -->
+        <record id="action_saas_tenant_config" model="ir.actions.act_window">
+            <field name="name">SaaS Configuration</field>
+            <field name="res_model">saas.tenant.config</field>
+            <field name="view_mode">form,tree</field>
+            <field name="view_id" ref="view_saas_tenant_config_form"/>
+        </record>
+
+        <!-- Menu Items -->
+        <menuitem id="saas_tenant_config_menu"
+                  name="SaaS Configuration"
+                  parent="base.menu_administration"
+                  sequence="10"
+                  groups="base.group_system"/>
+
+        <menuitem id="menu_saas_tenant_config"
+                  name="Configuration"
+                  parent="saas_tenant_config_menu"
+                  action="action_saas_tenant_config"
+                  sequence="5"
+                  groups="saas_custom_tenant.group_saas_admin"/>
+    </data>
+</odoo>

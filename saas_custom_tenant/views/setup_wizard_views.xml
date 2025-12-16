@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Setup Wizard Form View -->
+        <record id="view_saas_setup_wizard_form" model="ir.ui.view">
+            <field name="name">saas.setup.wizard.form</field>
+            <field name="model">saas.setup.wizard</field>
+            <field name="arch" type="xml">
+                <form string="SaaS Platform Setup">
+                    <header>
+                        <button name="action_previous" string="Previous"
+                                type="object" class="btn-secondary"
+                                attrs="{'invisible': [('step', '=', 1)]}"/>
+                        <button name="action_next" string="Next"
+                                type="object" class="btn-primary"
+                                attrs="{'invisible': [('step', '=', total_steps)]}"/>
+                        <button name="action_complete" string="Complete Setup"
+                                type="object" class="btn-success"
+                                attrs="{'invisible': [('step', '!=', total_steps)]}"/>
+                    </header>
+
+                    <div class="progress mb-4" style="height: 5px;">
+                        <div class="progress-bar" role="progressbar"
+                             style="width: <t t-esc='(step / total_steps) * 100'/>%"></div>
+                    </div>
+
+                    <div class="text-center mb-4">
+                        <h3>Step <t t-esc="step"/> of <t t-esc="total_steps"/></h3>
+                    </div>
+
+                    <!-- Step 1: Welcome and Basic Info -->
+                    <div attrs="{'invisible': [('step', '!=', 1)]}">
+                        <div class="alert alert-info">
+                            <t t-esc="welcome_message"/>
+                        </div>
+
+                        <group>
+                            <group string="Company Information">
+                                <field name="company_name" placeholder="Your Company Name"/>
+                                <field name="company_email" placeholder="admin@yourcompany.com"/>
+                                <field name="company_logo" widget="image" class="oe_avatar"/>
+                            </group>
+                        </group>
+                    </div>
+
+                    <!-- Step 2: Deployment Configuration -->
+                    <div attrs="{'invisible': [('step', '!=', 2)]}">
+                        <div class="alert alert-warning">
+                            <strong>Deployment Mode Selection</strong><br/>
+                            Choose how your tenant instances will be accessed.
+                        </div>
+
+                        <group>
+                            <group string="Deployment Settings">
+                                <field name="deployment_mode" widget="radio"/>
+                                <field name="master_host" attrs="{'required': [('deployment_mode', 'in', ['localhost', 'hybrid'])]}"/>
+                                <field name="master_port"/>
+                            </group>
+                            <group string="Port Configuration"
+                                   attrs="{'invisible': [('deployment_mode', '=', 'subdomain')]}">
+                                <field name="tenant_port_start"/>
+                                <field name="tenant_port_end"/>
+                                <field name="max_tenants"/>
+                                <div class="text-muted">
+                                    <small>Available ports: <t t-esc="tenant_port_end - tenant_port_start + 1"/></small>
+                                </div>
+                            </group>
+                        </group>
+
+                        <group string="Domain Configuration"
+                               attrs="{'invisible': [('deployment_mode', '=', 'localhost')]}">
+                            <field name="main_domain" placeholder="yourcompany.com"
+                                   attrs="{'required': [('deployment_mode', 'in', ['subdomain', 'hybrid'])]}"/>
+                            <field name="use_ssl"/>
+                        </group>
+
+                        <div class="mt-3">
+                            <button name="action_test_ports" string="Test Port Connectivity"
+                                    type="object" class="btn-info"/>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Database Configuration -->
+                    <div attrs="{'invisible': [('step', '!=', 3)]}">
+                        <div class="alert alert-warning">
+                            <strong>Database Configuration</strong><br/>
+                            Configure the database connection for tenant provisioning.
+                        </div>
+
+                        <group>
+                            <group string="Database Server">
+                                <field name="db_host" placeholder="localhost"/>
+                                <field name="db_port"/>
+                                <field name="db_user" placeholder="odoo"/>
+                                <field name="db_password" password="True"/>
+                            </group>
+                        </group>
+
+                        <div class="mt-3">
+                            <field name="test_connection"/>
+                            <button name="action_test_db_connection" string="Test Database Connection"
+                                    type="object" class="btn-primary"
+                                    attrs="{'invisible': [('test_connection', '=', False)]}"/>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Final Configuration -->
+                    <div attrs="{'invisible': [('step', '!=', 4)]}">
+                        <div class="alert alert-success">
+                            <strong>Final Configuration</strong><br/>
+                            Review your settings and complete the setup.
+                        </div>
+
+                        <group>
+                            <group string="Tenant Settings">
+                                <field name="enable_trials"/>
+                                <field name="trial_days" attrs="{'invisible': [('enable_trials', '=', False)]}"/>
+                                <field name="auto_approve"/>
+                                <field name="enable_monitoring"/>
+                            </group>
+                            <group string="Email Configuration">
+                                <field name="configure_email"/>
+                                <field name="email_from"
+                                       attrs="{'invisible': [('configure_email', '=', False)]}"/>
+                            </group>
+                        </group>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- Setup Wizard Action -->
+        <record id="action_saas_setup_wizard" model="ir.actions.act_window">
+            <field name="name">SaaS Platform Setup</field>
+            <field name="res_model">saas.setup.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="context">{'default_step': 1}</field>
+        </record>
+
+        <!-- Menu Item -->
+        <menuitem id="menu_saas_setup_wizard"
+                  name="Setup Wizard"
+                  parent="saas_tenant_config_menu"
+                  action="action_saas_setup_wizard"
+                  sequence="1"
+                  groups="saas_custom_tenant.group_saas_admin"/>
+    </data>
+</odoo>
