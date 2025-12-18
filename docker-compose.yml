@@ -18,11 +18,11 @@ services:
     depends_on:
       - db
     ports:
-      - "7001:8069"
-      - "7002:8072"  # for chat
+      - "${ODOO_PORT:-7001}:8069"  # Main Odoo interface
+      - "${ODOO_CHAT_PORT:-7002}:8072"  # Chat interface (optional)
     environment:
       HOST: db
-      PORT: 5432
+      PORT: ${DB_PORT:-5432}
       USER: odoo
       PASSWORD: odoo
       ODOO_RC: /etc/odoo/.odoorc
@@ -41,7 +41,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@odoo.com
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "5050:80"
+      - "${PGADMIN_PORT:-5050}:80"
     depends_on:
       - db
     networks:

@@ -56,6 +56,44 @@ A complete, production-ready SaaS multi-tenancy platform for Odoo 19 that allows
    - Search for "SaaS Signup Module"
    - Click Install
 
+### 🔧 **Port Customization (Optional)**
+
+If port 7001 or 5050 are already in use, you can customize the ports:
+
+**Option 1: Interactive Configuration**
+```bash
+# The installer will automatically ask for custom ports
+./install.sh
+```
+
+**Option 2: Environment Variables**
+```bash
+# Set ports before running
+export ODOO_PORT=8080
+export PGADMIN_PORT=8081
+./install.sh
+```
+
+**Option 3: Manual Configuration**
+```bash
+# Copy the example environment file
+cp .env.example .env
+
+# Edit the ports in .env
+# ODOO_PORT=8080
+# ODOO_CHAT_PORT=8081
+# PGADMIN_PORT=8082
+
+# Start services
+docker-compose up -d
+```
+
+**Option 4: Command Line Override**
+```bash
+# Override ports directly with docker-compose
+docker-compose up -d
+```
+
 That's it! Your SaaS platform is ready to accept tenant sign-ups.
 
 ## 📱 Using the Platform
@@ -94,6 +132,7 @@ Odoo19-Saas-Multi-tenancy/
 │   └── data/                    # Default configurations
 ├── config/                     # Odoo configuration
 ├── docker-compose.yml          # Docker services
+├── .env.example                # Port configuration example
 ├── install.sh                  # Quick installer
 ├── SETUP.md                   # Detailed setup guide
 ├── DEVELOPMENT.md              # Development guide
