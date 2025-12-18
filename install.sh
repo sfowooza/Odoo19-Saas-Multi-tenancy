@@ -155,9 +155,40 @@ EOF
     fi
 }
 
+# Check for port conflicts
+check_ports() {
+    print_status "Checking for port conflicts..."
+
+    # Check if main Odoo port is available
+    if netstat -tuln 2>/dev/null | grep -q ":7001 "; then
+        print_warning "Port 7001 is already in use."
+        print_status "Checking for alternative ports..."
+
+        for port in 8001 9001 10001; do
+            if ! netstat -tuln 2>/dev/null | grep -q ":$port "; then
+                print_status "Using alternative port: $port"
+                # Update docker-compose.yml with alternative port
+                sed -i "s/7001:8069/$port:8069/" docker-compose.yml
+                break
+            fi
+        done
+    fi
+
+    # Check pgAdmin port
+    if netstat -tuln 2>/dev/null | grep -q ":5050 "; then
+        print_warning "Port 5050 is already in use, using 5051 for pgAdmin."
+        sed -i "s/5050:80/5051:80/" docker-compose.yml
+    fi
+
+    print_success "Port configuration complete"
+}
+
 # Launch Docker containers
 launch_services() {
     print_status "Starting Docker services..."
+
+    # Check for port conflicts first
+    check_ports
 
     # Stop any existing containers
     docker-compose down
@@ -166,6 +197,18 @@ launch_services() {
     docker-compose up -d --build
 
     print_success "Docker services started"
+}
+
+# Get the actual Odoo port being used
+get_odoo_port() {
+    local port=$(grep -o '0\.0\.0\.0:\([0-9]*\)->8069' docker-compose.yml | head -1 | cut -d: -f2)
+    echo ${port:-7001}  # Default to 7001 if not found
+}
+
+# Get the actual pgAdmin port being used
+get_pgadmin_port() {
+    local port=$(grep -o '0\.0\.0\.0:\([0-9]*\)->80' docker-compose.yml | head -1 | cut -d: -f2)
+    echo ${port:-5050}  # Default to 5050 if not found
 }
 
 # Wait for services to be ready
@@ -204,22 +247,26 @@ wait_for_services() {
 
 # Display next steps
 display_next_steps() {
+    # Get actual ports being used
+    ODOO_PORT=$(get_odoo_port)
+    PGADMIN_PORT=$(get_pgadmin_port)
+
     echo ""
     echo "🎉 Installation Complete!"
     echo ""
     echo "Your Odoo 19 SaaS Multi-Tenancy Platform is now running."
     echo ""
     echo "📱 Access Information:"
-    echo "   • Main Odoo App: http://localhost:7001"
-    echo "   • Admin Panel:   http://localhost:7001/web"
-    echo "   • pgAdmin:       http://localhost:5050"
+    echo "   • Main Odoo App: http://localhost:$ODOO_PORT"
+    echo "   • Admin Panel:   http://localhost:$ODOO_PORT/web"
+    echo "   • pgAdmin:       http://localhost:$PGADMIN_PORT"
     echo ""
     echo "🔑 Default Credentials:"
     echo "   • Odoo Admin:   admin / admin"
     echo "   • pgAdmin:       admin@odoo.com / admin"
     echo ""
     echo "📋 Next Steps:"
-    echo "   1. Open http://localhost:7001/web"
+    echo "   1. Open http://localhost:$ODOO_PORT/web"
     echo "   2. Login with admin/admin"
     echo "   3. Go to Apps → Remove 'Apps' filter"
     echo "   4. Search for 'SaaS Signup Module'"
