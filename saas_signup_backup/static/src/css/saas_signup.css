@@ -1,0 +1,263 @@
+/* SaaS Signup Module - Optimized CSS */
+.saas_signup_page {
+    --primary-color: #4F46E5;
+    --primary-dark: #3730A3;
+    --success-color: #10B981;
+    --danger-color: #EF4444;
+    --light-bg: #F9FAFB;
+    --border-color: #E5E7EB;
+    --text-dark: #1F2937;
+    --text-light: #6B7280;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section - only on SaaS pages */
+.saas_hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    padding: 100px 0;
+    margin-bottom: 50px;
+    color: white;
+}
+
+.saas_hero .display-3 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.saas_hero .lead {
+    font-size: 1.25rem;
+    opacity: 0.9;
+}
+
+/* Cards - only on SaaS pages */
+.saas_card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: var(--shadow-lg);
+    background: white;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.saas_card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+/* Forms - only on SaaS pages */
+.saas_signup_form .form-control {
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    background-color: var(--light-bg);
+}
+
+.saas_signup_form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+    background-color: white;
+}
+
+.saas_signup_form label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* Buttons - only on SaaS pages */
+.btn_saas_primary {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    border: none;
+    border-radius: 12px;
+    padding: 16px 32px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn_saas_primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    color: white;
+}
+
+/* Plan Cards - only on SaaS pages */
+.plan-card {
+    border: 2px solid var(--border-color);
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    background: white;
+    position: relative;
+    cursor: pointer;
+    display: block;
+    margin: 0;
+}
+
+.plan-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.plan-card.selected {
+    border: 2px solid #28a745;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    transform: translateY(-2px);
+}
+
+/* Subdomain availability feedback */
+#subdomain-feedback {
+    margin-top: 0.25rem;
+    min-height: 1.5rem;
+}
+
+#subdomain-check-icon {
+    padding: 0.375rem 0.75rem;
+    background-color: #f8f9fa;
+}
+
+#subdomain-check-icon i {
+    font-size: 1rem;
+}
+
+#subdomain.is-valid {
+    border-color: #28a745;
+    background-image: none;
+}
+
+#subdomain.is-invalid {
+    border-color: #dc3545;
+    background-image: none;
+}
+
+#subdomain-preview {
+    font-weight: 600;
+    color: #007bff;
+}
+
+/* Selected state */
+.plan-radio:checked + .plan-card {
+    border-color: var(--primary-color);
+    border-width: 3px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(55, 48, 163, 0.05) 100%);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.3);
+}
+
+/* Checkmark for selected plan */
+.plan-radio:checked + .plan-card::after {
+    content: '✓';
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-color);
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    line-height: 30px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(79, 70, 229, 0.4);
+    animation: checkmark-appear 0.3s ease;
+}
+
+@keyframes checkmark-appear {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.plan-card .card-body {
+    position: relative;
+}
+
+.plan_card.popular {
+    border-color: var(--primary-color);
+    border-width: 3px;
+}
+
+/* Hide radio buttons but keep them functional */
+.plan-radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.plan_price {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-color);
+    margin-bottom: 16px;
+}
+
+.plan_features {
+    white-space: pre-line;
+    color: var(--text-light);
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+/* Success Page - only on SaaS pages */
+.success_icon {
+    width: 80px;
+    height: 80px;
+    background: var(--success-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    font-size: 2rem;
+    color: white;
+}
+
+/* Alerts - only on SaaS pages */
+.saas_alert {
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    border: none;
+}
+
+.saas_alert.danger {
+    background-color: #FEF2F2;
+    color: var(--danger-color);
+    border-left: 4px solid var(--danger-color);
+}
+
+/* Responsive - only on SaaS pages */
+@media (max-width: 768px) {
+    .saas_hero {
+        padding: 60px 0;
+    }
+
+    .saas_hero .display-3 {
+        font-size: 2.5rem;
+    }
+
+    .saas_card {
+        margin: 0 16px;
+    }
+
+    .plan_card {
+        margin-bottom: 16px;
+    }
+}

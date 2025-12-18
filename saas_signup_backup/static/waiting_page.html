@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Pending Approval - Odoo ERP SaaS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        h1 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+        
+        .status {
+            display: inline-block;
+            background: #FEF3C7;
+            color: #92400E;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 20px 0;
+            border: 2px solid #F59E0B;
+        }
+        
+        p {
+            color: #666;
+            font-size: 18px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+        
+        .info-box {
+            background: #F3F4F6;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            text-align: left;
+            border-radius: 5px;
+        }
+        
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        
+        .info-box ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .info-box li {
+            padding: 8px 0;
+            color: #555;
+        }
+        
+        .info-box li:before {
+            content: "✓ ";
+            color: #10B981;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #E5E7EB;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .refresh-notice {
+            background: #DBEAFE;
+            color: #1E40AF;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">⏳</div>
+        <h1>Account Pending Approval</h1>
+        <div class="status">⚠️ Awaiting Admin Approval</div>
+        
+        <p>Thank you for signing up! Your Odoo ERP instance is being prepared.</p>
+        
+        <div class="info-box">
+            <h3>📋 What's Happening?</h3>
+            <ul>
+                <li>Your account has been created</li>
+                <li>Database has been prepared</li>
+                <li>Awaiting administrator approval</li>
+                <li>Your instance will activate automatically once approved</li>
+            </ul>
+        </div>
+        
+        <p><strong>Approval Time:</strong> Usually within 24 hours</p>
+        
+        <div class="refresh-notice">
+            <strong>💡 Tip:</strong> Once approved, simply refresh this page or visit your instance URL again. The login page will appear automatically.
+        </div>
+        
+        <div class="footer">
+            <p>Odoo ERP SaaS Platform</p>
+            <p>Need help? Contact your administrator</p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-refresh every 60 seconds to check if approved
+        setTimeout(function() {
+            location.reload();
+        }, 60000);
+    </script>
+</body>
+</html>

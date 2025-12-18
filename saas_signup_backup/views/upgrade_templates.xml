@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Upgrade Plans Page -->
+    <template id="upgrade_page" name="Upgrade Plan Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure saas_signup_page">
+                <section class="saas_hero" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 80px 0;">
+                    <div class="container">
+                        <div class="text-center text-white">
+                            <h1 class="display-3 mb-3">Upgrade Your Plan</h1>
+                            <t t-if="client">
+                                <p class="lead mb-0">
+                                    Current Plan: <strong><t t-esc="client.subscription_id.name"/></strong>
+                                </p>
+                                <t t-if="client.trial_expired">
+                                    <div class="alert alert-warning mt-3 d-inline-block">
+                                        ⚠️ Your trial has expired. Please upgrade to continue using the service.
+                                    </div>
+                                </t>
+                                <t t-elif="client.trial_days_remaining &lt; 7">
+                                    <div class="alert alert-info mt-3 d-inline-block">
+                                        ⏰ Trial expires in <strong><t t-esc="client.trial_days_remaining"/> days</strong>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container my-5">
+                    <div class="row justify-content-center">
+                        <t t-foreach="plans" t-as="plan">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="card h-100 shadow-sm" t-att-class="'border-primary' if plan.is_popular else ''">
+                                    <div class="card-body text-center p-4">
+                                        <t t-if="plan.is_popular">
+                                            <span class="badge bg-primary mb-3">⭐ Popular</span>
+                                        </t>
+                                        <h4 class="card-title mb-3"><t t-esc="plan.name"/></h4>
+                                        
+                                        <div class="mb-4">
+                                            <t t-if="plan.monthly_price > 0">
+                                                <h2 class="text-primary">$<t t-esc="int(plan.monthly_price)"/></h2>
+                                                <small class="text-muted">per month</small>
+                                            </t>
+                                            <t t-else="">
+                                                <h2 class="text-success">Free</h2>
+                                                <small class="text-muted"><t t-esc="plan.trial_days"/> days trial</small>
+                                            </t>
+                                        </div>
+
+                                        <div class="text-start mb-4" style="min-height: 300px; white-space: pre-line;">
+                                            <t t-esc="plan.features"/>
+                                        </div>
+
+                                        <t t-if="client and client.subscription_id.id != plan.id">
+                                            <form method="POST" action="/saas/upgrade/request">
+                                                <input type="hidden" name="subdomain" t-att-value="subdomain"/>
+                                                <input type="hidden" name="plan_id" t-att-value="plan.id"/>
+                                                <button type="submit" class="btn btn-primary btn-lg w-100">
+                                                    Upgrade to <t t-esc="plan.name"/>
+                                                </button>
+                                            </form>
+                                        </t>
+                                        <t t-elif="client and client.subscription_id.id == plan.id">
+                                            <button class="btn btn-secondary btn-lg w-100" disabled="disabled">
+                                                Current Plan
+                                            </button>
+                                        </t>
+                                        <t t-else="">
+                                            <a href="/saas/signup" class="btn btn-primary btn-lg w-100">
+                                                Get Started
+                                            </a>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Upgrade Success Page -->
+    <template id="upgrade_success_page" name="Upgrade Request Success">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 80vh; display: flex; align-items: center;">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <div class="card shadow-lg">
+                                    <div class="card-body p-5 text-center">
+                                        <div class="mb-4" style="font-size: 80px;">✅</div>
+                                        <h1 class="mb-4">Upgrade Request Submitted!</h1>
+                                        
+                                        <div class="alert alert-success">
+                                            <h5>Your upgrade request has been received</h5>
+                                            <p class="mb-0">Our team will process your request shortly.</p>
+                                        </div>
+
+                                        <div class="my-4">
+                                            <h5>What happens next?</h5>
+                                            <ul class="list-unstyled text-start mt-3">
+                                                <li class="mb-2">✓ Admin will review your upgrade request</li>
+                                                <li class="mb-2">✓ New modules will be installed automatically</li>
+                                                <li class="mb-2">✓ You'll receive confirmation once complete</li>
+                                                <li class="mb-2">✓ Your instance will be upgraded with zero downtime</li>
+                                            </ul>
+                                        </div>
+
+                                        <t t-if="client">
+                                            <div class="alert alert-info">
+                                                <strong>Current Plan:</strong> <t t-esc="client.subscription_id.name"/><br/>
+                                                <strong>Requested Plan:</strong> <t t-esc="client.upgrade_plan_id.name"/>
+                                            </div>
+                                        </t>
+
+                                        <div class="mt-4">
+                                            <t t-if="client">
+                                                <a t-attf-href="http://localhost:#{client.port}/web" class="btn btn-primary btn-lg me-2">
+                                                    Back to Your Instance
+                                                </a>
+                                            </t>
+                                            <a href="/" class="btn btn-outline-secondary btn-lg">
+                                                Back to Homepage
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+</odoo>

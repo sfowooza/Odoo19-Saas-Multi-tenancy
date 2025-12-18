@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Website Menu Items -->
+    <record id="menu_saas_features" model="website.menu">
+        <field name="name">Features</field>
+        <field name="url">/saas/features</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">10</field>
+        <field name="is_visible" eval="True"/>
+    </record>
+
+    <record id="menu_saas_pricing" model="website.menu">
+        <field name="name">Pricing</field>
+        <field name="url">/saas/pricing</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">20</field>
+        <field name="is_visible" eval="True"/>
+    </record>
+
+    <record id="menu_saas_signup" model="website.menu">
+        <field name="name">Get Started</field>
+        <field name="url">/saas/signup</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">30</field>
+        <field name="is_visible" eval="True"/>
+    </record>
+</odoo>

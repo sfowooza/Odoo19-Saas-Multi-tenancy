@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- SaaS Configuration -->
+        <record id="default_saas_config" model="saas.configuration">
+            <field name="deployment_mode">subdomain</field>
+            <field name="main_domain">avodahconsult.info</field>
+            <field name="starting_port">8001</field>
+            <field name="use_ssl" eval="False"/>
+            <field name="docker_network">odoo19_odoo-network</field>
+            <field name="nginx_config_path">/etc/nginx/sites-enabled</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -15,3 +15,7 @@ access_saas_cron_user,saas.cron.user,model_saas_cron,base.group_user,1,0,0,0
 access_saas_cron_manager,saas.cron.manager,model_saas_cron,base.group_system,1,1,1,1
 access_saas_setup_wizard_user,saas.setup.wizard.user,model_saas_setup_wizard,base.group_user,1,1,1,1
 access_saas_setup_wizard_manager,saas.setup.wizard.manager,model_saas_setup_wizard,base.group_system,1,1,1,1
+access_saas_port_config_user,saas.port.config.user,model_saas_port_config,base.group_user,1,1,1,0
+access_saas_port_config_manager,saas.port.config.manager,model_saas_port_config,base.group_system,1,1,1,1
+access_saas_docker_logs_user,saas.docker.logs.user,model_saas_docker_logs,base.group_user,1,1,1,0
+access_saas_docker_logs_manager,saas.docker.logs.manager,model_saas_docker_logs,base.group_system,1,1,1,1

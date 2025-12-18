@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Signup Form Template -->
+    <template id="signup_form" name="SaaS Signup Form">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure saas_signup_page">
+                <!-- Hero Section -->
+                <section class="saas_hero">
+                    <div class="container">
+                        <div class="text-center">
+                            <!-- App Icon -->
+                            <div class="mb-4">
+                                <img src="/saas_signup/static/saas_icon_original_final.png" alt="SaaS App Icon"
+                                     style="width: 120px; height: 120px; object-fit: contain;"
+                                     class="img-fluid rounded-circle shadow-lg"/>
+                            </div>
+                            <h1 class="display-3 mb-3">Get Your Own Odoo ERP Instance</h1>
+                            <p class="lead mb-0">
+                                Create a dedicated Odoo ERP instance with your own port and database. Instant setup!
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Signup Form -->
+                <section class="container mb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 col-md-10">
+                            <!-- Error Messages -->
+                            <t t-if="error">
+                                <div class="saas_alert danger">
+                                    <strong>Error:</strong> <t t-esc="error"/>
+                                </div>
+                            </t>
+
+                            <!-- Loading Overlay -->
+                            <div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; justify-content: center; align-items: center;">
+                                <div style="text-align: center;">
+                                    <div class="spinner-border text-primary" role="status" style="width: 5rem; height: 5rem; border-width: 0.5rem;">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                    <h3 class="text-white mt-4">Creating Your Odoo ERP Instance...</h3>
+                                    <p class="text-white">This may take 30-60 seconds. Please wait...</p>
+                                </div>
+                            </div>
+
+                            <!-- Main Form -->
+                            <form action="/saas/signup/submit" method="post" class="saas_signup_form" id="signupForm">
+                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                <div class="saas_card">
+                                    <div class="card-body p-5">
+                                        <h3 class="text-center mb-4">Create Your Account</h3>
+
+                                        <!-- Company Information -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="company_name" class="form-label">Company Name *</label>
+                                                    <input type="text" class="form-control" id="company_name" name="company_name"
+                                                           required="required" placeholder="Your Company Name"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="subdomain" class="form-label">Database Identifier / Subdomain *</label>
+                                                    <div class="input-group">
+                                                        <input type="text" class="form-control" id="subdomain" name="subdomain"
+                                                               required="required" placeholder="mycompany"
+                                                               pattern="[a-z0-9]+"
+                                                               title="Only lowercase letters and numbers allowed"/>
+                                                        <t t-if="config.deployment_mode == 'subdomain'">
+                                                            <span class="input-group-text">.<t t-esc="config.main_domain"/></span>
+                                                        </t>
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        <t t-if="config.deployment_mode == 'subdomain'">
+                                                            Your instance URL: <strong><span id="subdomain-preview">mycompany</span>.<t t-esc="config.main_domain"/></strong>
+                                                        </t>
+                                                        <t t-else="">
+                                                            Database: <code>saas_<span id="subdomain-preview">mycompany</span></code>
+                                                        </t>
+                                                    </small>
+                                                </div>
+                                                
+                                                <!-- Info message based on deployment mode -->
+                                                <div class="alert alert-info">
+                                                    <i class="fa fa-info-circle"></i>
+                                                    <t t-if="config.deployment_mode == 'localhost'">
+                                                        <strong>Note:</strong> Your instance port will be automatically assigned (e.g., localhost:8001). You'll receive access details after approval.
+                                                    </t>
+                                                    <t t-else="">
+                                                        <strong>Note:</strong> Your instance will be accessible at your custom subdomain after approval.
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Admin Information -->
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="admin_name" class="form-label">Your Name *</label>
+                                                    <input type="text" class="form-control" id="admin_name" name="admin_name"
+                                                           required="required" placeholder="John Doe"/>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="admin_email" class="form-label">Email Address *</label>
+                                                    <input type="email" class="form-control" id="admin_email" name="admin_email"
+                                                           required="required" placeholder="john@company.com"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-4">
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="admin_password" class="form-label">Admin Password</label>
+                                                    <input type="password" class="form-control" id="admin_password" name="admin_password"
+                                                           placeholder="Leave blank for auto-generated secure password"/>
+                                                    <small class="text-muted">
+                                                        Optional: 12+ characters recommended
+                                                    </small>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="mb-3">
+                                                    <label for="phone" class="form-label">Phone Number</label>
+                                                    <input type="tel" class="form-control" id="phone" name="phone"
+                                                           placeholder="+256 123 456 789"/>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="country_id" class="form-label">Country</label>
+                                            <select class="form-control" id="country_id" name="country_id">
+                                                <option value="">Select Country</option>
+                                                <t t-foreach="countries" t-as="country">
+                                                    <option t-att-value="country.id">
+                                                        <t t-esc="country.name"/>
+                                                    </option>
+                                                </t>
+                                            </select>
+                                        </div>
+
+                                        <!-- Plan Selection -->
+                                        <div class="mb-4">
+                                            <h4 class="mb-3">Choose Your Plan *</h4>
+                                            <div class="row">
+                                                <t t-foreach="plans" t-as="plan">
+                                                    <div class="col-md-6 mb-3">
+                                                        <input type="radio" 
+                                                               name="plan_id" 
+                                                               t-att-id="'plan_' + str(plan.id)" 
+                                                               t-att-value="plan.id" 
+                                                               required="required" 
+                                                               class="d-none plan-radio"/>
+                                                        <label t-att-for="'plan_' + str(plan.id)" 
+                                                               class="card border-2 mb-3 plan-card" 
+                                                               style="cursor: pointer; transition: all 0.3s; position: relative;">
+                                                            <div class="card-body text-center p-4">
+                                                                <t t-if="plan.is_popular">
+                                                                    <span class="badge bg-primary position-absolute" style="top: 10px; right: 10px;">Popular</span>
+                                                                </t>
+                                                                <h5 class="card-title mb-3"><t t-esc="plan.name"/></h5>
+                                                                <div class="plan_price mb-3" style="font-size: 2rem; font-weight: bold;" t-att-style="'color: ' + ('#28a745' if plan.monthly_price == 0 else '#007bff')">
+                                                                    <t t-if="plan.monthly_price > 0">
+                                                                        $<t t-esc="int(plan.monthly_price)"/><small class="text-muted" style="font-size: 1rem;">/month</small>
+                                                                    </t>
+                                                                    <t t-else="">
+                                                                        Free
+                                                                    </t>
+                                                                </div>
+                                                                <div class="plan_features text-start" style="white-space: pre-line; font-size: 0.9rem;">
+                                                                    <t t-esc="plan.features"/>
+                                                                </div>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+
+                                        <!-- Terms -->
+                                        <div class="mb-4">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="terms" name="terms" required="required"/>
+                                                <label class="form-check-label" for="terms">
+                                                    I agree to the <a href="/terms" target="_blank">Terms of Service</a>
+                                                    and <a href="/privacy" target="_blank">Privacy Policy</a>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <!-- Submit Button -->
+                                        <div class="text-center">
+                                            <button type="submit" class="btn btn-primary btn-lg px-5" id="submitBtn">
+                                                <span id="btnText">Create My Odoo ERP Instance</span>
+                                                <span id="btnSpinner" class="spinner-border spinner-border-sm ms-2" style="display: none;"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <script>
+                            // Form submission handler
+                            document.getElementById('signupForm').addEventListener('submit', function(e) {
+                                // Show loading overlay
+                                document.getElementById('loadingOverlay').style.display = 'flex';
+                                
+                                // Update button
+                                var btn = document.getElementById('submitBtn');
+                                btn.disabled = true;
+                                btn.classList.remove('btn-primary');
+                                btn.classList.add('btn-secondary');
+                                document.getElementById('btnText').textContent = 'Creating Instance...';
+                                document.getElementById('btnSpinner').style.display = 'inline-block';
+                            });
+                            
+                            // Plan selection visual feedback
+                            document.querySelectorAll('.plan-radio').forEach(function(radio) {
+                                radio.addEventListener('change', function() {
+                                    document.querySelectorAll('.plan-card').forEach(function(card) {
+                                        card.classList.remove('border-primary');
+                                        card.style.borderWidth = '2px';
+                                    });
+                                    if (this.checked) {
+                                        this.nextElementSibling.classList.add('border-primary');
+                                        this.nextElementSibling.style.borderWidth = '3px';
+                                    }
+                                });
+                            });
+                            </script>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Success Page Template -->
+    <template id="signup_success" name="SaaS Signup Success">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure saas_signup_page">
+                <section class="saas_hero">
+                    <div class="container">
+                        <div class="text-center">
+                            <!-- App Icon -->
+                            <div class="mb-4">
+                                <img src="/saas_signup/static/saas_icon_original_final.png" alt="SaaS App Icon"
+                                     style="width: 120px; height: 120px; object-fit: contain;"
+                                     class="img-fluid rounded-circle shadow-lg"/>
+                            </div>
+                            <div class="success_icon mb-4">
+                                ✓
+                            </div>
+                            <h1 class="display-3 mb-3">Request Submitted!</h1>
+                            <p class="lead mb-0">
+                                Your SaaS account request has been submitted successfully.
+                            </p>
+                            <p class="mt-3">
+                                <span class="badge bg-warning text-dark" style="font-size: 1.1rem; padding: 10px 20px;">⏳ Pending Admin Approval</span>
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container mb-5">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <t t-if="client">
+                                <div class="saas_card">
+                                    <div class="card-body p-5 text-center">
+                                        <div class="alert alert-info mb-4">
+                                            <strong>ℹ️ Approval Required</strong><br/>
+                                            Your tenant is awaiting administrator approval. You will receive access once approved.
+                                        </div>
+                                        <h3 class="mb-4">Tenant Details</h3>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 text-md-end">
+                                                <strong>Company:</strong>
+                                            </div>
+                                            <div class="col-md-6 text-md-start">
+                                                <t t-esc="client.company_name"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 text-md-end">
+                                                <strong>Your Database:</strong>
+                                            </div>
+                                            <div class="col-md-6 text-md-start">
+                                                <code><t t-esc="client.database_name"/></code>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-primary mb-4" style="background: linear-gradient(135deg, #4F46E5 0%, #3730A3 100%); border: none;">
+                                            <h5 class="text-white mb-3">
+                                                <i class="fa fa-globe"></i> Your Instance URL
+                                            </h5>
+                                            <div class="input-group mb-3">
+                                                <input type="text" class="form-control form-control-lg" 
+                                                       t-att-value="client.get_tenant_url()" 
+                                                       readonly="readonly" 
+                                                       id="instanceUrl"
+                                                       style="font-size: 1.2rem; font-weight: bold; background: white;"/>
+                                                <button class="btn btn-light" type="button" onclick="copyUrl()">
+                                                    <i class="fa fa-copy"></i> Copy
+                                                </button>
+                                            </div>
+                                            <small class="text-white">
+                                                <i class="fa fa-exclamation-triangle"></i> <strong>IMPORTANT:</strong> This URL will NOT work until admin approves your account. Save it for later use.
+                                            </small>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 text-md-end">
+                                                <strong>Port Number:</strong>
+                                            </div>
+                                            <div class="col-md-6 text-md-start">
+                                                <code><t t-esc="client.port"/></code> <small class="text-muted">(Auto-assigned)</small>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-success" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%); border: none;">
+                                            <h5 class="text-white mb-3">
+                                                <i class="fa fa-key"></i> Login Credentials (After Approval)
+                                            </h5>
+                                            <div class="row mb-2">
+                                                <div class="col-md-4 text-md-end text-white">
+                                                    <strong>Username:</strong>
+                                                </div>
+                                                <div class="col-md-8 text-md-start">
+                                                    <input type="text" class="form-control" t-att-value="client.admin_email" readonly="readonly" style="background: white; font-weight: bold;"/>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-4 text-md-end text-white">
+                                                    <strong>Password:</strong>
+                                                </div>
+                                                <div class="col-md-8 text-md-start">
+                                                    <input type="text" class="form-control" t-att-value="client.admin_password" readonly="readonly" style="background: white; font-weight: bold;"/>
+                                                    <small class="text-white d-block mt-1">
+                                                        <i class="fa fa-info-circle"></i> Save these credentials securely. You'll need them to login after approval.
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-md-6 text-md-end">
+                                                <strong>Plan:</strong>
+                                            </div>
+                                            <div class="col-md-6 text-md-start">
+                                                <t t-esc="client.subscription_id.name"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-4">
+                                            <div class="col-md-6 text-md-end">
+                                                <strong>Trial Ends:</strong>
+                                            </div>
+                                            <div class="col-md-6 text-md-start">
+                                                <t t-esc="client.trial_end_date"/>
+                                            </div>
+                                        </div>
+
+                                        <div class="alert alert-warning" style="background: #FEF3C7; border-left: 4px solid #F59E0B;">
+                                            <h5 style="color: #92400E;">
+                                                <i class="fa fa-clock-o"></i> Next Steps
+                                            </h5>
+                                            <ol class="text-start mb-0" style="color: #92400E;">
+                                                <li class="mb-2">
+                                                    <strong>⏳ Wait for Approval:</strong> Admin will review your request (usually within 24 hours)
+                                                </li>
+                                                <li class="mb-2">
+                                                    <strong>🚫 Instance Not Active Yet:</strong> Your Odoo ERP instance will start AFTER approval
+                                                </li>
+                                                <li class="mb-2">
+                                                    <strong>🔗 Access URL (After Approval):</strong> <code><t t-esc="client.get_tenant_url()"/></code>
+                                                </li>
+                                                <li class="mb-2">
+                                                    <strong>🔑 Login Credentials:</strong> <code><t t-esc="client.admin_email"/></code> + your password
+                                                </li>
+                                                <li>
+                                                    <strong>💾 Save This Info:</strong> Bookmark this page or write down your access details
+                                                </li>
+                                            </ol>
+                                        </div>
+
+                                        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                                            <a t-attf-href="#{client.get_tenant_url()}/web" target="_blank"
+                                               class="btn btn-secondary btn-lg me-md-2" disabled="disabled" style="opacity: 0.5; cursor: not-allowed;">
+                                                🔒 Instance Not Active (Awaiting Approval)
+                                            </a>
+                                            <a href="/" class="btn btn-outline-primary btn-lg">
+                                                Back to Homepage
+                                            </a>
+                                        </div>
+                                        
+                                        <div class="alert alert-info mt-4" role="alert">
+                                            <i class="fa fa-info-circle"></i> <strong>Note:</strong> Trying to access your instance URL now will result in "Connection Refused" because the container has not been started yet. It will automatically start when admin approves your account.
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                            <t t-else="">
+                                <div class="saas_card">
+                                    <div class="card-body p-5 text-center">
+                                        <h3>Thank You!</h3>
+                                        <p>Your signup request has been received. We'll contact you soon.</p>
+                                        <a href="/" class="btn btn_saas_primary">
+                                            Back to Homepage
+                                        </a>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Pricing Page Template -->
+    <template id="pricing_page" name="SaaS Pricing Page">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure saas_signup_page">
+                <section class="saas_hero">
+                    <div class="container">
+                        <div class="text-center">
+                            <h1 class="display-3 mb-3">Choose Your Odoo ERP Plan</h1>
+                            <p class="lead mb-0">
+                                Each plan gives you a complete Odoo ERP instance with your own port and database
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="container mb-5">
+                    <div class="row justify-content-center">
+                        <t t-foreach="plans" t-as="plan">
+                            <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="plan_card h-100" t-att-class="'popular' if plan.is_popular else ''">
+                                    <div class="text-center">
+                                        <h4 class="mb-3">
+                                            <t t-esc="plan.name"/>
+                                            <t t-if="plan.is_popular">
+                                                <span class="badge bg-primary ms-2">Popular</span>
+                                            </t>
+                                        </h4>
+
+                                        <div class="plan_price mb-3">
+                                            <t t-if="plan.monthly_price > 0">
+                                                $<t t-esc="plan.monthly_price"/>
+                                                <small class="text-muted">/month</small>
+                                            </t>
+                                            <t t-else="">
+                                                Free
+                                            </t>
+                                        </div>
+
+                                        <div class="plan_features mb-4">
+                                            <t t-esc="plan.features"/>
+                                        </div>
+
+                                        <a href="/saas/signup" class="btn btn_saas_primary">
+                                            Get Started
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Features Page Template -->
+    <template id="features_page" name="SaaS Features">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="container mt-5 mb-5">
+                    <h1 class="text-center mb-5">Platform Features</h1>
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-rocket fa-3x mb-3 text-primary"></i>
+                                    <h4>Instant Provisioning</h4>
+                                    <p>Get your Odoo instance up and running in minutes with automated setup.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-shield fa-3x mb-3 text-success"></i>
+                                    <h4>Secure &amp; Isolated</h4>
+                                    <p>Each tenant runs in its own isolated environment with separate database.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-cog fa-3x mb-3 text-info"></i>
+                                    <h4>Flexible Plans</h4>
+                                    <p>Choose from multiple subscription tiers with different features and limits.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+    <!-- Pricing Page Template -->
+    <template id="pricing_page" name="SaaS Pricing">
+        <t t-call="website.layout">
+            <div id="wrap" class="oe_structure">
+                <section class="container mt-5 mb-5">
+                    <h1 class="text-center mb-5">Pricing Plans</h1>
+                    <div class="row">
+                        <t t-foreach="plans" t-as="plan">
+                            <div class="col-md-3 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-header text-center bg-primary text-white">
+                                        <h4><t t-esc="plan.name"/></h4>
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h2 class="mb-3">
+                                            $<t t-esc="plan.monthly_price"/>
+                                            <small class="text-muted">/month</small>
+                                        </h2>
+                                        <ul class="list-unstyled">
+                                            <li class="mb-2">
+                                                <i class="fa fa-check text-success"></i>
+                                                <t t-esc="plan.max_users"/> Users
+                                            </li>
+                                            <li class="mb-2">
+                                                <i class="fa fa-check text-success"></i>
+                                                <t t-esc="plan.storage_limit"/> GB Storage
+                                            </li>
+                                            <li class="mb-2" t-if="plan.trial_days">
+                                                <i class="fa fa-gift text-info"></i>
+                                                <t t-esc="plan.trial_days"/> Days Free Trial
+                                            </li>
+                                        </ul>
+                                        <a href="/saas/signup" class="btn btn-primary btn-block mt-3">Get Started</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </section>
+            </div>
+        </t>
+    </template>
+
+</odoo>
