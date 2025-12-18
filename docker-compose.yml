@@ -29,7 +29,7 @@ services:
     volumes:
       - odoo_data:/var/lib/odoo
       - ./config:/etc/odoo
-      - ./addons:/mnt/extra-addons
+      - ./saas_signup:/mnt/extra-addons
     command: odoo
     restart: always
     networks:
