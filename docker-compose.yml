@@ -21,16 +21,12 @@ services:
       - "${ODOO_PORT:-7001}:8069"  # Main Odoo interface
       - "${ODOO_CHAT_PORT:-7002}:8072"  # Chat interface (optional)
     environment:
-      HOST: db
-      PORT: ${DB_PORT:-5432}
-      USER: odoo
-      PASSWORD: odoo
-      ODOO_RC: /etc/odoo/.odoorc
+      ODOO_RC: /etc/odoo/odoo.conf
     volumes:
       - odoo_data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./saas_signup:/mnt/extra-addons
-    command: odoo
+    command: odoo -c /etc/odoo/odoo.conf --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo
     restart: always
     networks:
       - odoo-network
