@@ -86,4 +86,11 @@
               parent="menu_saas_config"
               action="action_saas_configuration"
               sequence="1"/>
+
+    <!-- Port Configuration Menu Item -->
+    <menuitem id="menu_saas_port_config_settings"
+              name="Port Configuration"
+              parent="menu_saas_config"
+              action="action_saas_port_config"
+              sequence="2"/>
 </odoo>

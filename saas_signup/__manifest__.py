@@ -49,6 +49,7 @@
         'views/saas_setup_wizard_views.xml',     # Setup wizard
         'views/website_menu_views.xml',          # Website navigation menus
         'views/saas_signup_templates.xml',
+        'views/saas_port_config_views.xml',       # Port configuration views
         'views/upgrade_templates.xml',
     ],
     'assets': {

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Port Configuration Tree View -->
+    <record id="view_saas_port_config_tree" model="ir.ui.view">
+        <field name="name">Port Configuration Tree</field>
+        <field name="model">saas.port.config</field>
+        <field name="arch" type="xml">
+            <tree string="Port Configurations">
+                <field name="name"/>
+                <field name="odoo_port"/>
+                <field name="odoo_chat_port"/>
+                <field name="pgadmin_port"/>
+                <field name="is_active"/>
+                <field name="is_default"/>
+                <field name="container_status"/>
+                <field name="ssl_enabled"/>
+                <field name="create_date"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Port Configuration Form View -->
+    <record id="view_saas_port_config_form" model="ir.ui.view">
+        <field name="name">Port Configuration Form</field>
+        <field name="model">saas.port.config</field>
+        <field name="arch" type="xml">
+            <form string="Port Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Configuration Name"/>
+                        </h1>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_test_ports" type="object" string="Test Ports" class="btn-primary"/>
+                            <button name="action_restart_services" type="object" string="Apply & Restart" class="btn-success"/>
+                            <button name="action_view_logs" type="object" string="View Logs" class="btn-secondary"/>
+                            <button name="set_as_default" type="object" string="Set as Default" class="btn-link"/>
+                        </div>
+                    </div>
+
+                    <div class="oe_button_box" name="status_box">
+                        <field name="container_status" widget="statusbar" statusbar_visible="{'error': ['error'], 'restarting': ['restarting']}" />
+                    </div>
+
+                    <group string="Port Settings">
+                        <group>
+                            <group name="main_ports">
+                                <field name="odoo_port" string="Main Odoo Port" placeholder="7001"/>
+                                <field name="odoo_chat_port" string="Chat Port" placeholder="7002"/>
+                            </group>
+                            <group name="db_ports">
+                                <field name="pgadmin_port" string="pgAdmin Port" placeholder="5050"/>
+                            </group>
+                        </group>
+                    </group>
+
+                    <group string="Advanced Settings">
+                        <group>
+                            <group name="ssl_settings">
+                                <field name="ssl_enabled"/>
+                                <field name="ssl_port" string="SSL Port" placeholder="443"/>
+                            </group>
+                            <group name="status_settings">
+                                <field name="is_active"/>
+                                <field name="is_default"/>
+                            </group>
+                        </group>
+                    </group>
+
+                    <group string="Technical Information">
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="last_restart" readonly="1"/>
+                            <field name="error_message" readonly="1" widget="text"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Port Configuration Action -->
+    <record id="action_saas_port_config" model="ir.actions.act_window">
+        <field name="name">Port Configurations</field>
+        <field name="res_model">saas.port.config</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_saas_port_config_tree"/>
+        <field name="target">current</field>
+        <field name="context">{'search_default_is_active': 1}</field>
+    </record>
+
+    <!-- Port Configuration Menu Item -->
+    <menuitem id="menu_saas_port_config"
+              name="Port Configuration"
+              parent="saas_config_menu_root"
+              action="action_saas_port_config"
+              sequence="10"
+              groups="base.group_system"/>
+
+    <!-- Docker Logs View (Simplified) -->
+    <record id="view_docker_logs_form" model="ir.ui.view">
+        <field name="name">Docker Logs</field>
+        <field name="model">saas.docker.logs</field>
+        <field name="arch" type="xml">
+            <form string="Docker Logs">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Docker Service Logs</h1>
+                    </div>
+                    <group>
+                        <field name="config_id" readonly="1"/>
+                        <field name="service_name"/>
+                        <field name="log_content" widget="text" readonly="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

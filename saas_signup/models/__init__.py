@@ -5,3 +5,5 @@ from . import saas_master_password_wizard
 from . import saas_dashboard
 from . import saas_cron
 from . import saas_setup_wizard
+from . import saas_port_config
+from . import saas_docker_logs
