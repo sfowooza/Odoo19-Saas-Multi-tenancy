@@ -26,7 +26,7 @@ services:
       - odoo_data:/var/lib/odoo
       - ./config:/etc/odoo
       - ./saas_signup:/mnt/extra-addons
-    command: odoo -c /etc/odoo/odoo.conf --db_host=db --db_port=5432 --db_user=odoo --db_password=odoo
+    command: odoo -c /etc/odoo/odoo.conf
     restart: always
     networks:
       - odoo-network
