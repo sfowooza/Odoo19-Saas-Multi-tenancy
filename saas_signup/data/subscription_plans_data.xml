@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Free Trial Plan -->
+        <record id="subscription_plan_trial" model="saas.subscription">
+            <field name="name">Free Trial</field>
+            <field name="code">trial</field>
+            <field name="sequence">10</field>
+            <field name="monthly_price">0.00</field>
+            <field name="yearly_price">0.00</field>
+            <field name="max_users">2</field>
+            <field name="max_storage">0.5</field>
+            <field name="max_databases">1</field>
+            <field name="trial_days">14</field>
+            <field name="is_popular" eval="False"/>
+            <field name="is_active" eval="True"/>
+            <field name="features">Basic Features
+2 Users
+500MB Storage
+Community Support
+
+Included Modules:
+• Discuss
+• Employees
+• Point of Sale
+• Project
+• Sales
+• Expenses</field>
+            <field name="module_list">mail,hr,point_of_sale,project,sale_management,hr_expense</field>
+        </record>
+
+        <!-- Starter Plan -->
+        <record id="subscription_plan_starter" model="saas.subscription">
+            <field name="name">Starter</field>
+            <field name="code">starter</field>
+            <field name="sequence">20</field>
+            <field name="monthly_price">19.00</field>
+            <field name="yearly_price">190.00</field>
+            <field name="max_users">5</field>
+            <field name="max_storage">5.0</field>
+            <field name="max_databases">1</field>
+            <field name="trial_days">14</field>
+            <field name="is_popular" eval="False"/>
+            <field name="is_active" eval="True"/>
+            <field name="features">All Free Trial Features
+5 Users
+5GB Storage
+Email Support
+Priority Support
+
+Additional Modules:
+• Payroll
+• Invoicing
+• Website
+• Dashboards
+• CRM</field>
+            <field name="module_list">mail,hr,point_of_sale,project,sale_management,hr_expense,hr_payroll,account,website,board,crm</field>
+        </record>
+
+        <!-- Professional Plan (Popular) -->
+        <record id="subscription_plan_professional" model="saas.subscription">
+            <field name="name">Professional</field>
+            <field name="code">professional</field>
+            <field name="sequence">30</field>
+            <field name="monthly_price">49.00</field>
+            <field name="yearly_price">490.00</field>
+            <field name="max_users">15</field>
+            <field name="max_storage">20.0</field>
+            <field name="max_databases">3</field>
+            <field name="trial_days">14</field>
+            <field name="is_popular" eval="True"/>
+            <field name="is_active" eval="True"/>
+            <field name="features">All Starter Features
+15 Users
+20GB Storage
+Priority Support
+Advanced Reports
+API Access
+
+All Modules Included:
+• Everything from Starter
+• Advanced Features</field>
+            <field name="module_list">mail,hr,point_of_sale,project,sale_management,hr_expense,hr_payroll,account,website,board,crm</field>
+        </record>
+
+        <!-- Enterprise Plan -->
+        <record id="subscription_plan_enterprise" model="saas.subscription">
+            <field name="name">Enterprise</field>
+            <field name="code">enterprise</field>
+            <field name="sequence">40</field>
+            <field name="monthly_price">99.00</field>
+            <field name="yearly_price">990.00</field>
+            <field name="max_users">999</field>
+            <field name="max_storage">100.0</field>
+            <field name="max_databases">10</field>
+            <field name="trial_days">30</field>
+            <field name="is_popular" eval="False"/>
+            <field name="is_active" eval="True"/>
+            <field name="features">All Professional Features
+Unlimited Users
+100GB Storage
+Dedicated Support
+Custom Integrations
+SLA Guarantee
+White Label Option
+
+Full Module Access:
+• All available modules
+• Custom module support</field>
+            <field name="module_list">mail,hr,point_of_sale,project,sale_management,hr_expense,hr_payroll,account,website,board,crm</field>
+        </record>
+    </data>
+</odoo>

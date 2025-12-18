@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- SaaS Configuration Form View -->
+    <record id="view_saas_configuration_form" model="ir.ui.view">
+        <field name="name">saas.configuration.form</field>
+        <field name="model">saas.configuration</field>
+        <field name="arch" type="xml">
+            <form string="SaaS Configuration">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>SaaS Deployment Configuration</h1>
+                    </div>
+                    
+                    <group>
+                        <group string="Deployment Mode">
+                            <field name="deployment_mode" widget="radio"/>
+                            <field name="main_domain" placeholder="e.g., avodahsystems.com" 
+                                   invisible="deployment_mode == 'localhost'"/>
+                            <field name="use_ssl" invisible="deployment_mode == 'localhost'"/>
+                            <field name="base_url" readonly="1"/>
+                        </group>
+                        
+                        <group string="Localhost Settings" invisible="deployment_mode == 'subdomain'">
+                            <field name="starting_port"/>
+                        </group>
+                        
+                        <group string="Docker Configuration">
+                            <field name="docker_network"/>
+                        </group>
+                        
+                        <group string="Advanced Settings" invisible="deployment_mode == 'localhost'">
+                            <field name="nginx_config_path"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Help &amp; Instructions">
+                            <group>
+                                <div class="alert alert-info" role="alert">
+                                    <h4>Deployment Modes Explained:</h4>
+                                    
+                                    <p><strong>1. Localhost/Self-Hosted Mode:</strong></p>
+                                    <ul>
+                                        <li>Each tenant runs on a different port (8001, 8002, 8003, etc.)</li>
+                                        <li>Access: http://localhost:8001, http://localhost:8002, etc.</li>
+                                        <li>Best for: Development, testing, local installations</li>
+                                        <li>Requirements: Docker installed</li>
+                                    </ul>
+                                    
+                                    <p><strong>2. Subdomain/Cloud Mode:</strong></p>
+                                    <ul>
+                                        <li>Each tenant runs on a subdomain</li>
+                                        <li>Access: tenant1.yourdomain.com, tenant2.yourdomain.com</li>
+                                        <li>Best for: Production, cloud hosting, professional SaaS</li>
+                                        <li>Requirements: Domain name, Nginx reverse proxy, SSL certificate (optional)</li>
+                                    </ul>
+                                    
+                                    <p><strong>Configuration Steps:</strong></p>
+                                    <ol>
+                                        <li>Choose your deployment mode</li>
+                                        <li>For subdomain mode: Enter your main domain (auto-detected)</li>
+                                        <li>Configure Docker network name if different</li>
+                                        <li>Save configuration</li>
+                                        <li>Users can now sign up and get their tenant instance</li>
+                                    </ol>
+                                </div>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- SaaS Configuration Action -->
+    <record id="action_saas_configuration" model="ir.actions.act_window">
+        <field name="name">SaaS Configuration</field>
+        <field name="res_model">saas.configuration</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'form_view_initial_mode': 'edit'}</field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_saas_configuration"
+              name="SaaS Settings"
+              parent="menu_saas_config"
+              action="action_saas_configuration"
+              sequence="1"/>
+</odoo>

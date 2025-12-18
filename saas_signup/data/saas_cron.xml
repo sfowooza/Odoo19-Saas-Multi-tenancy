@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Resource Monitoring Cron Job -->
+    <record id="ir_cron_monitor_resources" model="ir.cron">
+        <field name="name">SaaS: Monitor Resource Limits</field>
+        <field name="model_id" ref="model_saas_cron"/>
+        <field name="state">code</field>
+        <field name="code">model.monitor_resource_limits()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">hours</field>
+        <field name="active" eval="True"/>
+    </record>
+    
+    <!-- Trial Expiration Check -->
+    <record id="ir_cron_check_trials" model="ir.cron">
+        <field name="name">SaaS: Check Trial Expirations</field>
+        <field name="model_id" ref="model_saas_cron"/>
+        <field name="state">code</field>
+        <field name="code">model.check_trial_expirations()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active" eval="True"/>
+    </record>
+    
+    <!-- Cleanup Old Tenants -->
+    <record id="ir_cron_cleanup_tenants" model="ir.cron">
+        <field name="name">SaaS: Cleanup Old Cancelled Tenants</field>
+        <field name="model_id" ref="model_saas_cron"/>
+        <field name="state">code</field>
+        <field name="code">model.cleanup_old_tenants()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">weeks</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

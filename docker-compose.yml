@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_USER: odoo
+    restart: always
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - odoo-network
+
+  odoo19:
+    image: odoo:19.0
+    depends_on:
+      - db
+    ports:
+      - "7001:8069"
+      - "7002:8072"  # for chat
+    environment:
+      HOST: db
+      PORT: 5432
+      USER: odoo
+      PASSWORD: odoo
+      ODOO_RC: /etc/odoo/.odoorc
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    command: odoo
+    restart: always
+    networks:
+      - odoo-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@odoo.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    networks:
+      - odoo-network
+    restart: always
+
+volumes:
+  postgres_data:
+  odoo_data:
+
+networks:
+  odoo-network:
+    driver: bridge

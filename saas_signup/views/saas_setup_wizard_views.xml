@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Setup Wizard Form View -->
+    <record id="view_saas_setup_wizard_form" model="ir.ui.view">
+        <field name="name">saas.setup.wizard.form</field>
+        <field name="model">saas.setup.wizard</field>
+        <field name="arch" type="xml">
+            <form string="SaaS Platform Setup">
+                <sheet>
+                    <div class="alert alert-info text-center mb-3">
+                        <h3>🚀 Welcome to SaaS Signup Module</h3>
+                        <p>Configure your deployment mode to get started</p>
+                    </div>
+                    
+                    <group>
+                        <group string="Deployment Configuration">
+                            <field name="deployment_mode" widget="radio"/>
+                            <field name="detected_domain" readonly="1" 
+                                   invisible="deployment_mode == 'localhost'"/>
+                        </group>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Localhost Setup" name="localhost" 
+                              invisible="deployment_mode != 'localhost'">
+                            <group>
+                                <group string="Port Configuration">
+                                    <field name="starting_port"/>
+                                    <div class="o_form_label">Tenants will run on ports: 8001, 8002, 8003...</div>
+                                </group>
+                                <group string="Access URLs">
+                                    <div class="o_form_label">Example Tenant URLs:</div>
+                                    <div>
+                                        <ul>
+                                            <li>http://localhost:8001</li>
+                                            <li>http://localhost:8002</li>
+                                            <li>http://localhost:8003</li>
+                                        </ul>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-warning">
+                                <strong>📝 Note:</strong> Localhost mode is ideal for development and testing. 
+                                Each tenant will need a separate Odoo instance on a different port.
+                            </div>
+                        </page>
+                        
+                        <page string="Cloud Setup" name="subdomain"
+                              invisible="deployment_mode != 'subdomain'">
+                            <group>
+                                <group string="Domain Configuration">
+                                    <field name="main_domain" required="1" 
+                                           placeholder="e.g., yourdomain.com"/>
+                                    <field name="use_ssl"/>
+                                </group>
+                                <group string="Access URLs">
+                                    <div class="o_form_label">Example Tenant URLs:</div>
+                                    <div>
+                                        <ul>
+                                            <li invisible="not use_ssl">
+                                                https://tenant1.<field name="main_domain" readonly="1" nolabel="1"/>
+                                            </li>
+                                            <li invisible="use_ssl">
+                                                http://tenant1.<field name="main_domain" readonly="1" nolabel="1"/>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-info">
+                                <strong>🌐 Requirements:</strong>
+                                <ul>
+                                    <li>DNS wildcard record: *.yourdomain.com → your server IP</li>
+                                    <li>Nginx configured for subdomain routing</li>
+                                    <li>SSL certificate (wildcard recommended)</li>
+                                </ul>
+                                <p>See <code>PRODUCTION_DEPLOYMENT.md</code> for complete setup guide.</p>
+                            </div>
+                        </page>
+                        
+                        <page string="Summary" name="summary">
+                            <group>
+                                <group string="Your Configuration">
+                                    <field name="deployment_mode" readonly="1"/>
+                                    <field name="main_domain" readonly="1"/>
+                                    <field name="use_ssl" readonly="1"/>
+                                    <field name="starting_port" readonly="1" 
+                                           invisible="deployment_mode != 'localhost'"/>
+                                </group>
+                            </group>
+                            
+                            <div class="alert alert-success">
+                                <strong>✅ You can change these settings later:</strong>
+                                <p>Settings → SaaS Configuration → Configuration</p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button string="Configure" name="action_configure" type="object" class="btn-primary"/>
+                    <button string="Skip (Use Defaults)" name="action_skip" type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Setup Wizard Action -->
+    <record id="action_saas_setup_wizard" model="ir.actions.act_window">
+        <field name="name">SaaS Platform Setup</field>
+        <field name="res_model">saas.setup.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_saas_setup_wizard_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <!-- Setup Wizard Menu Item -->
+    <menuitem id="menu_saas_setup_wizard"
+              name="Setup Wizard"
+              parent="menu_saas_config"
+              action="action_saas_setup_wizard"
+              sequence="5"/>
+
+</odoo>

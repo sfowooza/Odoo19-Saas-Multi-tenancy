@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Dashboard Kanban View with Statistics -->
+    <record id="view_saas_client_dashboard_kanban" model="ir.ui.view">
+        <field name="name">saas.client.dashboard.kanban</field>
+        <field name="model">saas.client</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_dashboard" create="false">
+                <field name="state"/>
+                <field name="subscription_id"/>
+                <field name="create_date"/>
+                <field name="port"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_content">
+                                <div class="o_kanban_primary_left">
+                                    <div class="o_primary">
+                                        <strong><field name="company_name"/></strong>
+                                    </div>
+                                    <div class="text-muted">
+                                        <i class="fa fa-globe"/> <field name="subdomain"/>
+                                    </div>
+                                    <div class="text-muted" t-if="record.port.raw_value">
+                                        <i class="fa fa-server"/> Port: <field name="port"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="subscription_id"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <field name="state" widget="label_selection" 
+                                           options="{'classes': {'active': 'success', 'suspended': 'warning', 'pending': 'info'}}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Enhanced Client List View with Stats -->
+    <record id="view_saas_client_list_dashboard" model="ir.ui.view">
+        <field name="name">saas.client.list.dashboard</field>
+        <field name="model">saas.client</field>
+        <field name="arch" type="xml">
+            <list string="Tenants" decoration-success="state=='active'" 
+                  decoration-warning="state=='suspended'" decoration-info="state=='pending'">
+                <field name="company_name" string="Company"/>
+                <field name="subdomain"/>
+                <field name="port" optional="hide"/>
+                <field name="subscription_id" optional="show"/>
+                <field name="admin_email" string="Email" optional="hide"/>
+                <field name="is_trial" optional="hide"/>
+                <field name="trial_days_remaining" string="Trial Days" optional="hide"/>
+                <field name="state" widget="badge" 
+                       decoration-success="state=='active'"
+                       decoration-warning="state=='suspended'"
+                       decoration-info="state=='pending'"/>
+                <field name="create_date" string="Signup Date" optional="show"/>
+                <field name="trial_end_date" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Dashboard Action -->
+    <record id="action_saas_dashboard" model="ir.actions.act_window">
+        <field name="name">SaaS Dashboard</field>
+        <field name="res_model">saas.client</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="view_id" ref="view_saas_client_dashboard_kanban"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                SaaS Platform Dashboard
+            </p>
+            <p>
+                Monitor your tenants and platform health.
+            </p>
+        </field>
+    </record>
+
+    <!-- Dashboard Menu Item -->
+    <menuitem id="menu_saas_dashboard"
+              name="Dashboard"
+              parent="menu_saas_root"
+              action="action_saas_dashboard"
+              sequence="1"/>
+
+</odoo>

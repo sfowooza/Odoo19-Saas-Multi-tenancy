@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- SaaS Client List View -->
+    <record id="view_saas_client_tree" model="ir.ui.view">
+        <field name="name">saas.client.list</field>
+        <field name="model">saas.client</field>
+        <field name="arch" type="xml">
+            <list string="SaaS Clients" decoration-success="state == 'active'" decoration-warning="state == 'pending'" decoration-danger="state == 'rejected'" decoration-muted="state == 'suspended'">
+                <field name="company_name"/>
+                <field name="subdomain"/>
+                <field name="port"/>
+                <field name="database_name"/>
+                <field name="admin_email"/>
+                <field name="admin_password" password="True"/>
+                <field name="subscription_id"/>
+                <field name="state" widget="badge" decoration-success="state == 'active'" decoration-warning="state == 'pending'" decoration-danger="state == 'rejected'"/>
+                <field name="trial_end_date"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- SaaS Client Form View -->
+    <record id="view_saas_client_form" model="ir.ui.view">
+        <field name="name">saas.client.form</field>
+        <field name="model">saas.client</field>
+        <field name="arch" type="xml">
+            <form string="SaaS Client">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'pending'"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="state != 'pending'"/>
+                    <button name="action_reset_password" string="Reset Password" type="object" class="btn-info"
+                            invisible="state not in ['active', 'approved', 'suspended']" groups="base.group_system"/>
+                    <button name="action_suspend" string="Suspend" type="object" class="btn-warning"
+                            invisible="state not in ['active', 'approved']" groups="base.group_system"/>
+                    <button name="action_activate" string="Activate" type="object" class="oe_highlight"
+                            invisible="state != 'suspended'" groups="base.group_system"/>
+                    <button name="action_approve_upgrade" type="object" string="Approve Upgrade" class="btn-success" invisible="upgrade_requested == False"/>
+                    <field name="state" widget="statusbar" statusbar_visible="pending,approved,active,suspended"/>
+                </header>
+
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="company_name" placeholder="Company Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Company Information">
+                            <field name="subdomain"/>
+                            <field name="port" readonly="1"/>
+                            <field name="database_name" readonly="1"/>
+                            <field name="admin_name"/>
+                            <field name="admin_email"/>
+                            <field name="admin_password" password="True"/>
+                            <field name="phone"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Subscription Details">
+                            <field name="subscription_id"/>
+                            <field name="is_trial"/>
+                            <field name="trial_end_date"/>
+                            <field name="trial_days_remaining" invisible="is_trial == False"/>
+                            <field name="trial_expired" invisible="is_trial == False"/>
+                            <field name="upgrade_requested"/>
+                            <field name="upgrade_plan_id" invisible="upgrade_requested == False"/>
+                            <field name="upgrade_request_date" invisible="upgrade_requested == False"/>
+                            <field name="last_login"/>
+                            <field name="create_date"/>
+                        </group>
+                    </group>
+                    
+                    <group string="Approval Information" invisible="state in ['pending']">
+                        <group>
+                            <field name="approved_by" readonly="1"/>
+                            <field name="approved_date" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="rejection_reason" invisible="state != 'rejected'"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes" placeholder="Add notes about this client..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- SaaS Client Search View -->
+    <record id="view_saas_client_search" model="ir.ui.view">
+        <field name="name">saas.client.search</field>
+        <field name="model">saas.client</field>
+        <field name="arch" type="xml">
+            <search string="SaaS Clients">
+                <field name="company_name"/>
+                <field name="subdomain"/>
+                <field name="admin_email"/>
+                <field name="subscription_id"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- SaaS Client Action -->
+    <record id="action_saas_client" model="ir.actions.act_window">
+        <field name="name">Tenant Clients</field>
+        <field name="res_model">saas.client</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_saas_client_tree"/>
+        <field name="context">{'search_default_pending': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No tenant clients yet
+            </p>
+            <p>
+                Tenant signups will appear here for approval. You can view all tenant details including:
+                <ul>
+                    <li>Company information and contact details</li>
+                    <li>Instance URL and port number</li>
+                    <li>Database name and admin credentials</li>
+                    <li>Subscription plan and trial period</li>
+                </ul>
+                Use the signup form at <code>/saas/signup</code> to create test tenants.
+            </p>
+        </field>
+    </record>
+
+    <!-- SaaS Subscription List View -->
+    <record id="view_saas_subscription_tree" model="ir.ui.view">
+        <field name="name">saas.subscription.list</field>
+        <field name="model">saas.subscription</field>
+        <field name="arch" type="xml">
+            <list string="Subscription Plans">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="monthly_price"/>
+                <field name="yearly_price"/>
+                <field name="max_users"/>
+                <field name="max_storage"/>
+                <field name="client_count"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- SaaS Subscription Form View -->
+    <record id="view_saas_subscription_form" model="ir.ui.view">
+        <field name="name">saas.subscription.form</field>
+        <field name="model">saas.subscription</field>
+        <field name="arch" type="xml">
+            <form string="Subscription Plan">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Plan Name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="sequence"/>
+                            <field name="is_active"/>
+                            <field name="is_popular"/>
+                        </group>
+                        <group>
+                            <field name="monthly_price"/>
+                            <field name="yearly_price"/>
+                            <field name="trial_days"/>
+                        </group>
+                    </group>
+
+                    <group string="Limits">
+                        <group>
+                            <field name="max_users"/>
+                            <field name="max_databases"/>
+                        </group>
+                        <group>
+                            <field name="max_storage"/>
+                            <field name="client_count"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="features" placeholder="List plan features..."/>
+                    </group>
+                    
+                    <notebook>
+                        <page string="Modules Configuration">
+                            <group>
+                                <field name="module_list" placeholder="e.g: mail,hr,point_of_sale,project,sale_management,hr_expense"/>
+                            </group>
+                            <div class="alert alert-info" role="alert">
+                                <p><strong>Module Configuration Guide:</strong></p>
+                                <ul>
+                                    <li><strong>Discuss:</strong> mail</li>
+                                    <li><strong>Employees:</strong> hr</li>
+                                    <li><strong>Point of Sale:</strong> point_of_sale</li>
+                                    <li><strong>Project:</strong> project</li>
+                                    <li><strong>Sales:</strong> sale_management</li>
+                                    <li><strong>Expenses:</strong> hr_expense</li>
+                                    <li><strong>Payroll:</strong> hr_payroll</li>
+                                    <li><strong>Invoicing:</strong> account</li>
+                                    <li><strong>Website:</strong> website</li>
+                                    <li><strong>Dashboards:</strong> board</li>
+                                    <li><strong>CRM:</strong> crm</li>
+                                </ul>
+                                <p class="text-muted mt-2"><em>Enter comma-separated module technical names. These modules will be automatically installed when a tenant signs up with this plan.</em></p>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- SaaS Subscription Action -->
+    <record id="action_saas_subscription" model="ir.actions.act_window">
+        <field name="name">Subscription Plans</field>
+        <field name="res_model">saas.subscription</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_saas_subscription_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first subscription plan
+            </p>
+            <p>
+                Define the different subscription plans available for your SaaS platform.
+            </p>
+        </field>
+    </record>
+
+    <!-- Frontend Actions -->
+    <record id="action_saas_signup" model="ir.actions.act_url">
+        <field name="name">Start Your Free Trial</field>
+        <field name="url">/saas/signup</field>
+        <field name="target">self</field>
+    </record>
+
+    <record id="action_saas_pricing" model="ir.actions.act_url">
+        <field name="name">View Pricing</field>
+        <field name="url">/saas/pricing</field>
+        <field name="target">self</field>
+    </record>
+
+    <!-- Backend Menu Items (for logged-in admins) -->
+    <menuitem id="menu_saas_root" name="SaaS Management" sequence="10" web_icon="saas_signup,static/description/icon.png"/>
+    <menuitem id="menu_saas_clients" name="Tenant Clients" parent="menu_saas_root" sequence="1" action="action_saas_client"/>
+    <menuitem id="menu_saas_subscriptions" name="Subscription Plans" parent="menu_saas_root" sequence="2" action="action_saas_subscription"/>
+    <menuitem id="menu_saas_config" name="Configuration" parent="menu_saas_root" sequence="10"/>
+    <menuitem id="menu_saas_master_password" name="Master Password Info" parent="menu_saas_config" sequence="1" action="saas_signup.action_master_password_info"/>
+
+    <!-- Frontend Menu Items (website - for public users) -->
+    <menuitem id="website_menu_saas_signup" name="Start Free Trial" parent="website.main_menu" sequence="15" action="action_saas_signup" groups="base.group_public"/>
+    <menuitem id="website_menu_saas_pricing" name="Pricing" parent="website.main_menu" sequence="16" action="action_saas_pricing" groups="base.group_public"/>
+
+</odoo>

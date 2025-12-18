@@ -1,0 +1,17 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_subscription_public,saas.subscription.public,model_saas_subscription,base.group_public,1,0,0,0
+access_saas_subscription_user,saas.subscription.user,model_saas_subscription,base.group_user,1,1,1,0
+access_saas_subscription_manager,saas.subscription.manager,model_saas_subscription,base.group_system,1,1,1,1
+access_saas_client_public,saas.client.public,model_saas_client,base.group_public,1,0,0,0
+access_saas_client_user,saas.client.user,model_saas_client,base.group_user,1,1,1,0
+access_saas_client_manager,saas.client.manager,model_saas_client,base.group_system,1,1,1,1
+access_saas_configuration_user,saas.configuration.user,model_saas_configuration,base.group_user,1,0,0,0
+access_saas_configuration_manager,saas.configuration.manager,model_saas_configuration,base.group_system,1,1,1,1
+access_saas_master_password_wizard_user,saas.master.password.wizard.user,model_saas_master_password_wizard,base.group_user,1,0,0,0
+access_saas_master_password_wizard_manager,saas.master.password.wizard.manager,model_saas_master_password_wizard,base.group_system,1,1,1,1
+access_saas_dashboard_user,saas.dashboard.user,model_saas_dashboard,base.group_user,1,0,0,0
+access_saas_dashboard_manager,saas.dashboard.manager,model_saas_dashboard,base.group_system,1,1,1,1
+access_saas_cron_user,saas.cron.user,model_saas_cron,base.group_user,1,0,0,0
+access_saas_cron_manager,saas.cron.manager,model_saas_cron,base.group_system,1,1,1,1
+access_saas_setup_wizard_user,saas.setup.wizard.user,model_saas_setup_wizard,base.group_user,1,1,1,1
+access_saas_setup_wizard_manager,saas.setup.wizard.manager,model_saas_setup_wizard,base.group_system,1,1,1,1

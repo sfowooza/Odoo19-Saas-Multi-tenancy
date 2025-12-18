@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Configuration List View -->
+    <record id="view_saas_configuration_tree" model="ir.ui.view">
+        <field name="name">saas.configuration.tree</field>
+        <field name="model">saas.configuration</field>
+        <field name="arch" type="xml">
+            <list string="SaaS Configurations" decoration-success="active==True" decoration-muted="active==False">
+                <field name="id"/>
+                <field name="deployment_mode"/>
+                <field name="main_domain"/>
+                <field name="starting_port"/>
+                <field name="use_ssl"/>
+                <field name="active"/>
+                <field name="create_date"/>
+                <field name="write_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Configuration Form View -->
+    <record id="view_saas_configuration_form" model="ir.ui.view">
+        <field name="name">saas.configuration.form</field>
+        <field name="model">saas.configuration</field>
+        <field name="arch" type="xml">
+            <form string="SaaS Configuration">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="toggle_active" type="object" 
+                                class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button"
+                                   options='{"terminology": "archive"}'/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="deployment_mode" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group name="deployment">
+                            <field name="deployment_mode"/>
+                            <field name="main_domain"/>
+                            <field name="base_url" readonly="1"/>
+                        </group>
+                        <group name="settings">
+                            <field name="starting_port"/>
+                            <field name="use_ssl"/>
+                            <field name="docker_network"/>
+                            <field name="nginx_config_path"/>
+                        </group>
+                    </group>
+                    <group string="Status">
+                        <group>
+                            <field name="create_date" readonly="1"/>
+                            <field name="create_uid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="write_date" readonly="1"/>
+                            <field name="write_uid" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Configuration List -->
+    <record id="action_saas_configuration_list" model="ir.actions.act_window">
+        <field name="name">SaaS Configurations</field>
+        <field name="res_model">saas.configuration</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_saas_configuration_tree"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first SaaS configuration
+            </p>
+            <p>
+                Configure how your SaaS platform will deploy tenants.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_saas_configuration_list"
+              name="View Configurations"
+              parent="menu_saas_configuration"
+              action="action_saas_configuration_list"
+              sequence="15"/>
+
+</odoo>
